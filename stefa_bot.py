@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import logging, os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
+from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 SCHEDULE_URL = "https://tvorish.ru/calendar"
 
