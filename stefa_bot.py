@@ -3,32 +3,24 @@ import logging, os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8851062670:AAGp8vON3NUE-fqjmIBngAcacsvATvW0aE8")
-ADMIN_USERNAME = "@katya_tvorish"
-ADMIN_PHONE = "+7 919 770 72 89"
-SITE_URL = "https://tvorish.ru"
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 SCHEDULE_URL = "https://tvorish.ru/calendar"
-SHOP_URL = "https://tvorish.ru/shop"
-CERT_URL = "https://tvorish.ru/certificate"
-TELEGRAM_CHANNEL = "https://t.me/u_cho_tvorish"
 
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
 
-WELCOME_TEXT = """🐾 *Гав! Я Стефа* — главный амбассадор мастерской «Ты чо творишь»
+WELCOME_TEXT = """🐾 *Гав! Я Стефа* — амбассадор мастерской «Ты чо творишь»
 
-Помогу найти всё нужное: расскажу про форматы, узнаю про твоё изделие и провожу к Кате 🎨
-
-Что хочешь узнать?"""
+Помогу найти всё нужное: расскажу про форматы, узнаю про твоё изделие и провожу к Кате 🎨"""
 
 ABOUT_TEXT = """🏺 *Мастерская «Ты чо творишь»*
 
-Мы — креативная мастерская керамики в Москве. Пространство свободы, творчества, дружбы и самовыражения.
+Креативная мастерская керамики в Москве. Пространство свободы, творчества и самовыражения.
 
-Лепим посуду, предметы декора, отпечатки лапок — без художественных навыков и без понтов.
+Лепим посуду, предметы декора, отпечатки лапок — без навыков и без понтов.
 
 📞 +7 919 770 72 89
 🌐 tvorish.ru
-📱 t.me/u_cho_tvorish"""
+📱 t.me/u\\_cho\\_tvorish"""
 
 FORMATS_TEXT = """🎨 *Форматы мастер-классов*
 
@@ -36,83 +28,73 @@ FORMATS_TEXT = """🎨 *Форматы мастер-классов*
 3 часа лепки + игристое + фуршет + музыка. 18+
 
 🖐 *Руки из жопы* — 5 000 ₽
-Ручная лепка без подготовки. Хулиганское название — терапевтический эффект. 12+
+Ручная лепка без подготовки. 12+
 
 👨‍👩‍👧 *Глиномесики* — 4 000 ₽
-Семейный/детский МК. Можно с детьми или всей семьёй. 3+
+Семейный/детский МК. 3+
 
 🐶 *Лапы лепят* — 6 500 ₽
-Приходите с собаками! Отпечатки лапок и носиков.
+С собаками! Отпечатки лапок и носиков.
 
 🔮 *Керамистика* — 7 000 ₽
 Лепка + таро + астропрогнозы + фуршет.
 
 🕯 *Свидетельство о жизни* — по запросу
-Альтернативные поминки. Сохранить память через творчество.
 
 📅 Расписание: tvorish.ru/calendar
 _Перед оплатой уточни даты: +7 919 770 72 89_"""
 
 CORPORATE_TEXT = """🏢 *Корпоративные форматы*
 
-• 🤝 Творческие тимбилдинги
+• 🤝 Тимбилдинги
 • 🎁 Корпоративные подарки с логотипом
 • 🍽 Посуда на заказ для HoReCa
 • 🏠 Интерьерные решения
 
 От 6 до 30 человек — в мастерской или выезд.
-Стоимость меньше, когда участников больше 😊
 
-📝 Бриф: tvorish.ru
-📞 Написать Кате: @katya_tvorish"""
+📝 tvorish.ru
+📞 @katya\\_tvorish"""
 
 READY_TEXT = """🏺 *Узнать о своём изделии*
 
 После мастер-класса изделие проходит:
 1. 🌬 Сушка
-2. ✂️ Обработка перед обжигом
+2. ✂️ Обработка
 3. 🔥 Первый обжиг
-4. 🎨 Покрытие глазурью
+4. 🎨 Глазурь
 5. 🔥 Второй обжиг
 
 *Срок — до 3–4 недель*
 
-Когда работа готова — Катя напишет лично!
-
 Узнать статус → напиши Кате:
-👉 @katya_tvorish
+👉 @katya\\_tvorish
 📞 +7 919 770 72 89"""
 
 PICKUP_TEXT = """📦 *Как получить готовое изделие*
 
-🚶 *Самовывоз* — приезжай сама, договорись с Катей о времени
+🚶 *Самовывоз* — договорись с Катей о времени
+🚚 *Курьер* — доставка за твой счёт
+📮 *Яндекс Маркет* — Катя отправит сама
 
-🚚 *Курьер* — организуем доставку за твой счёт
-
-📮 *Яндекс Маркет* — Катя отправит сама, оплата при получении
-
-Напиши Кате что удобнее:
-👉 @katya_tvorish
+👉 @katya\\_tvorish
 📞 +7 919 770 72 89"""
 
 CERT_TEXT = """🎁 *Подарочные сертификаты*
 
-Отличный подарок на любой повод!
-Сертификаты на все форматы мастер-классов.
+На все форматы мастер-классов.
 
 Купить: tvorish.ru/certificate
-Или напиши Кате: @katya_tvorish"""
+Или: @katya\\_tvorish"""
 
 CONTACTS_TEXT = """📞 *Контакты*
 
 👩‍💼 Катя — администратор
-Telegram: @katya_tvorish
+Telegram: @katya\\_tvorish
 Телефон: +7 919 770 72 89
 
 🌐 tvorish.ru
-📅 tvorish.ru/calendar
-🛍 tvorish.ru/shop
-📱 t.me/u_cho_tvorish"""
+📅 tvorish.ru/calendar"""
 
 def main_kb():
     return InlineKeyboardMarkup([
@@ -142,7 +124,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    data = q.data
     responses = {
         "main": (WELCOME_TEXT, main_kb()),
         "about": (ABOUT_TEXT, back_kb()),
@@ -153,8 +134,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "pickup": (PICKUP_TEXT, back_kb()),
         "contacts": (CONTACTS_TEXT, back_kb()),
     }
-    if data in responses:
-        text, kb = responses[data]
+    if q.data in responses:
+        text, kb = responses[q.data]
         await q.edit_message_text(text=text, parse_mode="Markdown", reply_markup=kb)
 
 async def message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -173,8 +154,8 @@ async def message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(CONTACTS_TEXT, parse_mode="Markdown", reply_markup=back_kb())
     else:
         await update.message.reply_text(
-            "🐾 Не совсем поняла! Выбери из меню или напиши:\n«готово» — статус изделия\n«форматы» — все МК\n«контакты» — связь с Катей",
-            parse_mode="Markdown", reply_markup=main_kb()
+            "🐾 Не совсем поняла! Выбери из меню 👇",
+            reply_markup=main_kb()
         )
 
 def main():
